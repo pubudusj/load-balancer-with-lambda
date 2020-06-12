@@ -19,3 +19,11 @@ resource "aws_lambda_function" "lambda" {
   runtime = "nodejs12.x"
   source_code_hash = filebase64sha256("lambda.zip")
 }
+
+resource "aws_lambda_permission" "with_lb" {
+  statement_id  = "AllowExecutionFromlb"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.lambda.arn
+  principal     = "elasticloadbalancing.amazonaws.com"
+  source_arn    = aws_lb_target_group.lambda-target-group.arn
+}
